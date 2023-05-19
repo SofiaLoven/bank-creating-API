@@ -5,7 +5,7 @@ import session from 'express-session';
 import bcrypt from 'bcrypt';
 
 const app = express();
-const port = 3001;
+const port = 3004;
 const FIVE_MINUTES = 5 * 60 * 1000; 
 const saltRounds = 10;
 
@@ -44,25 +44,27 @@ app.post('/api/register', async (req, res)=>{
         let answer = await userCollection.insertOne(post);
         res.json({answer});
     }else{
-        res.status(401).json({error: 'Username used'})
-    }    
+        res.status(401).json({ error: 'Unauthorized'});
+    }
 })
 
 
 app.post('/api/login', async (req, res)=>{
     const user = await userCollection.findOne({user: req.body.loginUser});
     
-    const match = await bcrypt.compare(req.body.loginPass, user.pass); 
-    
-    console.log("match:", user.pass);
-    if(match){
-        req.session.user = user;
-        res.json({user: user.user});
-        console.log(user.user);
-    }else{
-        res.status(401).json({ error: 'Unauthorized'});
+    if(user){
+        const match = await bcrypt.compare(req.body.loginPass, user.pass); 
+        
+        console.log("match:", user.pass);
+        if(match){
+            req.session.user = user;
+            res.json({user: user.user});
+            //console.log(user.user);
+        }else{
+            res.status(401).json({ error: 'Unauthorized'});         
+        }
     }
-})
+});     
 
 app.get('/api/loggedin', (req, res)=>{ 
     if(req.session.user){

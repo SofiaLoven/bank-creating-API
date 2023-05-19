@@ -9,7 +9,9 @@ const regUser = document.querySelector("#regUser");
 const regPass = document.querySelector("#regPass");
 const regMess = document.querySelector("#regMess");
 const logout = document.querySelector("#logout");
-const bankPage = document.querySelector("#signedIn")
+const bankPage = document.querySelector("#signedIn");
+const authDiv = document.querySelector("#signedOut");
+
 
 let renderPage = async () =>{
     let response = await fetch('/api/loggedin');
@@ -17,17 +19,17 @@ let renderPage = async () =>{
     //console.log(data)
     if(data.user){
         welcome.innerText = `You have signed in as ${data.user.user}!`;
-        loginForm.classList.add("hidden");
-        regForm.classList.add("hidden");
+        authDiv.classList.add("hidden");
         logout.classList.remove("hidden");
         bankPage.classList.remove("hidden");
         getAccounts(); 
     } else{
         console.log('Load Page:', data.error);
+        bankPage.classList.add("hidden");
     }
 }
 
-// Kolla att uanvändarnamnet inte än använt.
+
 regForm.addEventListener('submit', async (e)=>{
     e.preventDefault();
     let response = await fetch('/api/register', {
@@ -39,7 +41,7 @@ regForm.addEventListener('submit', async (e)=>{
         })
     })
     let result = await response.json();
-    
+    console.log(response);
     if(response.ok){
         regMess.innerText= `Tack för att du har registrerat dig. Nu kan ${regUser.value} logga in.`;
         regUser.value ="";
@@ -52,21 +54,23 @@ regForm.addEventListener('submit', async (e)=>{
 
 loginForm.addEventListener('submit', async (e)=>{
     e.preventDefault();
-    try{
-        let response = await fetch('/api/login', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                loginUser: user.value,
-                loginPass: pass.value
-            })
+    let response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            loginUser: user.value,
+            loginPass: pass.value
         })
-        let result = await response.json();
+    })
+    let result = await response.json();
+    console.log(response);
+    if(response.ok){
         console.log('login:', result);
         location.reload();
-    }catch{
-        res.status(401).json({ error: 'Unauthorized' });
+    }else{
+        alert("Du har tyvärr fel användarnamn eller lösenord");
     }
+    
 })
 
 logout.addEventListener('submit', async (e)=>{

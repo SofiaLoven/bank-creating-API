@@ -10,12 +10,17 @@
 </head>
 <body>
     <header>
-        <h1>Riskbanken</h1>
-        <img src="./undraw_savings_re_eq4w.svg" alt="Man som sitter på spargris">
+        <div>
+            <h1>Riskbanken</h1>
+            <img src="./undraw_savings_re_eq4w.svg" alt="Man som sitter på spargris">
+        </div>
+        <form id="logout" class="hidden">
+            <button>Logout</button>
+        </form>
     </header>
     <div id="signedOut" class="logged-out">
         <h1>Inloggning</h1>
-        <div class="style-login">
+        <div class="style-login" id="auth">
             <div class="form">
                 <form id="register">
                 <p>Registrering</p>
@@ -39,9 +44,6 @@
                 <p id="welcome"></p>
             </div>
         </div>
-        <form id="logout" class="hidden">
-            <button>Logout</button>
-        </form>
     </div>
     <div class="userPage hidden" id="signedIn">
         <section class="allAccounts">
